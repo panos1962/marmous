@@ -1,37 +1,23 @@
 #include <stdio.h>	// exit...
 #include <stdlib.h>	// exit...
-#include <stdbool.h>	// true, false...
 #include <string.h>	// strcmp, strtok...
+#include <stdbool.h>	// true, false...
 
 #define MAX_CMD_LEN 2048
 #define MAX_TOK_CNT 16
 
-extern int check_exit(char *);
+extern bool read_command(char *);
 
 int main(void)
 {
 	char buffer[MAX_CMD_LEN + 1];
-	char *argv[MAX_TOK_CNT];
 
 	printf("Type \"quit\", \"exit\" or [Ctrl-D] to exit shell\n");
 
-	while (true)
+	while (read_command(buffer))
 	{
+		char *argv[MAX_TOK_CNT];
 		int token_count = 0;
-
-		printf("Our shell: ");
-
-		if (fgets(buffer, MAX_CMD_LEN, stdin) == NULL)
-		{
-			break;
-		}
-
-		buffer[strlen(buffer) - 1] = '\0';
-
-		if (check_exit(buffer))
-		{
-			break;
-		}
 
 		argv[token_count] = strtok(buffer, " ");
 
@@ -40,14 +26,12 @@ int main(void)
 			token_count++;
 			argv[token_count] = strtok(NULL, " ");
 		}
-
 	}
 
-END:
 	exit(0);
 }
 
-int check_exit(char *s)
+bool read_command(char *s)
 {
 	char *exit_token[] = {
 		"quit",
@@ -56,13 +40,22 @@ int check_exit(char *s)
 	};
 	int i;
 
+	printf("Our shell: ");
+
+	if (fgets(s, MAX_CMD_LEN, stdin) == NULL)
+	{
+		return false;
+	}
+
+	s[strlen(s) - 1] = '\0';
+
 	for (i = 0; i < sizeof(exit_token) / sizeof(exit_token[0]); i++)
 	{
 		if (strcmp(s, exit_token[i]) == 0)
 		{
-			return true;
+			return false;
 		}
 	}
 
-	return false;
+	return true;
 }
