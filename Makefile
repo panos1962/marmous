@@ -5,7 +5,7 @@ $(EXEC): $(OBJS)
 	cc -o $(EXEC) $(OBJS)
 
 cleanup:
-	@rm $(EXEC) $(OBJS)
+	@rm -f $(EXEC) $(OBJS)
 
 test: $(EXEC)
 	./$(EXEC)
